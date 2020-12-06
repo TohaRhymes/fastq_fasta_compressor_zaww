@@ -77,41 +77,43 @@ def to_fasta_fastq(filename, names_file, seq_file, dels_file, qual_file=None, fa
         except ValueError:
             pass
 
-
-# Decompress a compressed byte string.
-decompress = _brotli.decompress
-
-# Raised if compression or decompression fails.
-error = _brotli.error
-
-# 4 output files from unsqueze
-dir_out = './script_out'
-
-
-dir_fastq = './'
-
-out_names = os.path.join(dir_out, 'names_file')
-out_seq = os.path.join(dir_out, 'seq_file')
-out_qual = os.path.join(dir_out, 'qual_file')
-out_dels = os.path.join(dir_out, 'dels_file')
-
-decompress_zaww()
-
-# TO ONE FILE
 try:
-    out_file = sys.argv[1]
+    # Decompress a compressed byte string.
+    decompress = _brotli.decompress
 
-    to_fasta_fastq(os.path.join(dir_fastq, out_file),
-                   out_names,
-                   out_seq,
-                   out_dels,
-                   out_qual
-                   )
+    # Raised if compression or decompression fails.
+    error = _brotli.error
 
-    for file in [out_names,
-                 out_seq,
-                 out_dels,
-                 out_qual]:
-        os.remove(file)
-except IndexError:
-    print('Usage:\n python3 decompress.py <output.fastq>')
+    # 4 output files from unsqueze
+    dir_out = './script_out'
+
+
+    dir_fastq = './'
+
+    out_names = os.path.join(dir_out, 'names_file')
+    out_seq = os.path.join(dir_out, 'seq_file')
+    out_qual = os.path.join(dir_out, 'qual_file')
+    out_dels = os.path.join(dir_out, 'dels_file')
+
+    decompress_zaww()
+
+    # TO ONE FILE
+    try:
+        out_file = sys.argv[1]
+
+        to_fasta_fastq(os.path.join(dir_fastq, out_file),
+                       out_names,
+                       out_seq,
+                       out_dels,
+                       out_qual
+                       )
+
+        for file in [out_names,
+                     out_seq,
+                     out_dels,
+                     out_qual]:
+            os.remove(file)
+    except IndexError:
+        print('Usage:\n python3 decompress.py <output.fastq>')
+except FileNotFoundError:
+    print('There is no package script_out with 4 files')

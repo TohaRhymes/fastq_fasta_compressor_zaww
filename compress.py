@@ -131,47 +131,49 @@ def compress(string, mode=MODE_TEXT, quality=11, lgwin=22, lgblock=0):
                             lgblock=lgblock)
     return compressor.process(string) + compressor.finish()
 
+try:
+    # Decompress a compressed byte string.
+    decompress = _brotli.decompress
 
-# Decompress a compressed byte string.
-decompress = _brotli.decompress
+    # Raised if compression or decompression fails.
+    error = _brotli.error
 
-# Raised if compression or decompression fails.
-error = _brotli.error
+    # from where to read
+    dir_in = './'
 
-# from where to read
-dir_in = './'
+    input_file = 'example/read.fastq'
 
-input_file = 'read.fastq'
-
-# 4 output files from unsqueze
-dir_out = './script_out'
-dir_creation(dir_out)
+    # 4 output files from unsqueze
+    dir_out = './script_out'
+    dir_creation(dir_out)
 
 
-out_names = 'names_file'
-out_seq = 'seq_file'
-out_qual = 'qual_file'
-out_dels = 'dels_file'
+    out_names = 'names_file'
+    out_seq = 'seq_file'
+    out_qual = 'qual_file'
+    out_dels = 'dels_file'
 
-out_names = os.path.join(dir_out, out_names)
-out_seq = os.path.join(dir_out, out_seq)
-out_qual = os.path.join(dir_out, out_qual)
-out_dels = os.path.join(dir_out, out_dels)
+    out_names = os.path.join(dir_out, out_names)
+    out_seq = os.path.join(dir_out, out_seq)
+    out_qual = os.path.join(dir_out, out_qual)
+    out_dels = os.path.join(dir_out, out_dels)
 
-from_fasta_fastq(os.path.join(dir_in, input_file),
-                 out_names,
+    from_fasta_fastq(os.path.join(dir_in, input_file),
+                     out_names,
+                     out_seq,
+                     out_dels,
+                     out_qual)
+
+    with open(out_names, 'r') as f1, open(out_seq, 'r') as f2, open(out_qual, 'r') as f3, open(out_dels, 'r') as f4:
+        for name_file, file in zip([out_names, out_seq, out_qual, out_dels], [f1, f2, f3, f4]):
+            sequance = file.read().encode('ascii')
+            compress_sequance = compress(sequance)
+            with open(name_file + '.zaww', 'wb') as file_zaww:
+                file_zaww.write(compress_sequance)
+    for file in [out_names,
                  out_seq,
                  out_dels,
-                 out_qual)
-
-with open(out_names, 'r') as f1, open(out_seq, 'r') as f2, open(out_qual, 'r') as f3, open(out_dels, 'r') as f4:
-    for name_file, file in zip([out_names, out_seq, out_qual, out_dels], [f1, f2, f3, f4]):
-        sequance = file.read().encode('ascii')
-        compress_sequance = compress(sequance)
-        with open(name_file + '.zaww', 'wb') as file_zaww:
-            file_zaww.write(compress_sequance)
-for file in [out_names,
-             out_seq,
-             out_dels,
-             out_qual]:
-    os.remove(file)
+                 out_qual]:
+        os.remove(file)
+except IndexError:
+        print('Usage:\n python3 decompress.py <intput.fastq>')
