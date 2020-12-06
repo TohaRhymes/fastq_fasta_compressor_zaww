@@ -21,6 +21,10 @@ Decompressor = _brotli.Decompressor
 
 # Deompress a byte string.
 def decompress_zaww():
+    """
+    Function decompress zaww-files to usual files.
+
+    """
     with open(out_names + '.zaww', 'rb') as f1, \
             open(out_seq + '.zaww', 'rb') as f2, \
             open(out_qual + '.zaww', 'rb') as f3, \
@@ -33,6 +37,10 @@ def decompress_zaww():
 
 
 def tgaps_to_qvals(tgaps):
+    """
+        Function transform special t-gaps back to array
+        Returns: ascii-array
+    """
     tgaps = [ord(q.encode('ascii')) for q in tgaps]
     q_vals = [x // 2 if x % 2 == 0 else -(x - 1) // 2 for x in tgaps]
     q_vals[0] += 2 * MIN_PHRED
@@ -77,6 +85,7 @@ def to_fasta_fastq(filename, names_file, seq_file, dels_file, qual_file=None, fa
         except ValueError:
             pass
 
+
 try:
     # Decompress a compressed byte string.
     decompress = _brotli.decompress
@@ -87,7 +96,6 @@ try:
     # 4 output files from unsqueze
     dir_out = './script_out'
 
-
     dir_fastq = './'
 
     out_names = os.path.join(dir_out, 'names_file')
@@ -96,8 +104,7 @@ try:
     out_dels = os.path.join(dir_out, 'dels_file')
 
     decompress_zaww()
-
-    # TO ONE FILE
+    """TO ONE FASTQ-file"""
     try:
         out_file = sys.argv[1]
 

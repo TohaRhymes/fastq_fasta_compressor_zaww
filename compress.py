@@ -35,6 +35,10 @@ def dir_creation(path):
 
 
 def loss_t_gaps(q_scores):
+    """
+        Function transform array of quality-numbers to special t-gaps
+        Returns: usual array
+    """
     tgaps = []
     tgaps.append(q_scores[0] - MIN_PHRED)
     for i in range(len(q_scores) - 1):
@@ -45,6 +49,10 @@ def loss_t_gaps(q_scores):
 
 
 def qvals_to_tgaps(q_scores):
+    """
+        Function transform array of quality-numbers to special t-gaps
+        Returns: ascii-array
+    """
     # q_scores = [ord(q.compress.py('ascii')) for q in q_scores]
     loss_tgaps = loss_t_gaps(q_scores)
     # loss_tgaps = [2 if (x > 127 and x % 2 == 0) else 1 if (x > 127 and x % 2 == 1) else x for x in loss_tgaps]
