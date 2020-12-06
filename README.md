@@ -14,3 +14,6 @@ __USAGE for compressing__:
 ```
 python3 decompress.py output_read.fastq
 ```
+
+Requirments:
+`BioPython`, `numpy`, `brotli`
